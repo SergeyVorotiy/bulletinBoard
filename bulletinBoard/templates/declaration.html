@@ -1,0 +1,22 @@
+{% extends 'default.html' %}
+{% block title %}
+declaration
+{% endblock title %}
+{% block content %}
+{% load static %}
+  <h3>{{declaration.title}}</h3>
+  <h6>{{declaration.text}}</h6>
+  {{declaration.upload}}
+  {% if request.user == declaration.author %}
+  <a href="/declaration/{{declaration.pk}}/edit/">Изменить</a>
+  {% endif %}
+  <h3>Responses:</h3>
+  {% for response in responses %}
+  <a class="form-control" href="/response/{{response.pk}}/">
+    <p>{{response.author.username}} - {{response.text}}</p>
+  </a>
+  {% endfor %}
+  {% if request.user != declaration.author %}
+  <a href="/declaration/{{declaration.pk}}/createresponse" class="form-control btn">Добавить отклик</a>
+  {% endif %}
+{% endblock content %}

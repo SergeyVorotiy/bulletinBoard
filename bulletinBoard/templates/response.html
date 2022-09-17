@@ -1,0 +1,14 @@
+{% extends 'default.html' %}
+{% block title %}
+declaration
+{% endblock title %}
+{% block content %}
+    <h3>{{response.author.username}} - {{response.text}}</h3>
+    {% if request.user == response.declaration.author %}
+    {% if not response.accepted %}
+    <a href="/response/{{response.pk}}/accept">Принять</a>
+    {% else %}
+    <p>Отклик принят</p>
+    {% endif %}
+    {% endif %}
+{% endblock content %}

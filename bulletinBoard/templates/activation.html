@@ -1,0 +1,23 @@
+{% extends 'default.html' %}
+{% block title %} Account activation {% endblock title %}
+{% block content %}
+{% if activate_error_incorrect_code %}
+<h1>неверный код</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Активировать">
+</form>
+{% else %}
+    {% if is_activate %}
+    <h1>Ваш аккаунт успешно актевирован</h1>
+    <a href="/">На главную</a>
+    {% else %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Активировать">
+    </form>
+    {% endif %}
+{% endif %}
+{% endblock content %}

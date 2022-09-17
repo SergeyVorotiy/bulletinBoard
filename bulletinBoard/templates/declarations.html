@@ -1,0 +1,13 @@
+{% extends 'default.html' %}
+{% block title %}
+  declarations
+{% endblock title %}
+{% block content %}
+  {% for declaration in declarations %}
+  <a class="form-control" href="/declaration/{{declaration.pk}}/">
+    <h3>{{declaration.title}}</h3>
+    <p>{{declaration.text}}</p>
+    <p>{{declaration.author}}</p>
+  </a>
+  {% endfor %}
+{% endblock content %}

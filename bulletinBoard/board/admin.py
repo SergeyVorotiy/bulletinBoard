@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Declaration, DeclarationResponse
+
+
+admin.site.register(Declaration)
+admin.site.register(DeclarationResponse)

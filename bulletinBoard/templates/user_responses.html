@@ -1,0 +1,28 @@
+{% extends 'default.html' %}
+{% block content %}
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Фильтровать" />
+    </form>
+{{ request.user }}
+    {% if responses %}
+        {% for response in responses %}
+        {%if response.declaration.author == request.user and response.author != request.user%}
+        <a class="page-link text-dark text-start news-card" href="/response/{{response.pk}}">
+            <h3>{{ response.author }}</h3>
+            <p>{{response.text}}</p>
+            {% if not response.accepted %}
+            <a class="btn list-inline" href="/response/{{response.pk}}/accept">Принять</a>
+            {% else %}
+            <p> Отклик принят </p>
+            {% endif %}
+            <a class="btn list-inline" href="/response/{{response.pk}}/delete">Удалить</a>
+        </a>
+        <hr>
+        {%endif%}
+        {% endfor %}
+    {% else %}
+        <h1>Enter a request</h1>
+    {% endif %}
+
+{% endblock content %}
