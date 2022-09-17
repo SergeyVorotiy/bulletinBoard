@@ -12,9 +12,17 @@ from django.views.generic import (
     TemplateView
 )
 
+from allauth.account.views import SignupView
+
 from .forms import ActivationForm, DeclarationForm, DeclarationResponseForm
 from .models import UserActivation, Declaration, DeclarationResponse
 from .filters import ResponseFilter
+
+
+class CustomSignupView(SignupView):
+    def form_valid(self, form):
+        super().form_valid(self, form)
+        return HttpResponseRedirect('/account/activate/')
 
 
 @login_required
@@ -39,7 +47,7 @@ def user_activation_view(request):
         return render(request=request, template_name='activation.html', context=context)
     else:
         context['is_activate'] = True
-        return render(request=request, template_name='activation.html', context=context)
+        return HttpResponseRedirect('/')
 
 
 class BoardView(ListView):

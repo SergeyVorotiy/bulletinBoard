@@ -145,8 +145,8 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 LOGIN_URL = '/account/login/'
-LOGIN_REDIRECT_URL = '/'
-SIGNUP_REDIRECT_URL = '/account/activate'
+LOGIN_REDIRECT_URL = '/account/activate/'
+SIGNUP_REDIRECT_URL = '/account/activate/'
 
 DEFAULT_FROM_EMAIL = 'svobeckend@inbox.ru'
 EMAIL_HOST = 'smtp.mail.ru'
