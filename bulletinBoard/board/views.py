@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.auth.models import User, Permission
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
@@ -36,8 +37,7 @@ def user_activation_view(request):
             if check_table.user == user and check_table.secret_key == key:
                 check_table.user_activated = True
                 check_table.save()
-                user_perm = User.objects.get(email=request.user.email).user_permissions.add(Permission.objects.get(codename='add_declaration'), Permission.objects.get(codename='add_declarationresponse'))
-
+                User.objects.get(email=request.user.email).user_permissions.add(Permission.objects.get(codename='add_declaration'), Permission.objects.get(codename='add_declarationresponse'))
                 return HttpResponseRedirect('/')
             else:
                 context['activate_error_incorrect_code'] = False
@@ -64,8 +64,18 @@ class DeclarationView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['responses'] = DeclarationResponse.objects.filter(declaration=context['declaration'])
+        if self.request.user == context['declaration'].author:
+            context['responses'] = DeclarationResponse.objects.filter(declaration=context['declaration'])
+        elif self.request.user.email:
+            context['responses'] = DeclarationResponse.objects.filter(author=self.request.user)
         return context
+
+
+class DeclarationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = ('board.add_declaration', )
+    model = Declaration
+    template_name = 'delete.html'
+    success_url = reverse_lazy('declarations')
 
 
 class ResponseView(DetailView):
@@ -82,14 +92,15 @@ class UserResponsesView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     context_object_name = 'responses'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        user = self.request.user
+        author = User.objects.get(email=user.email)
+        queryset = DeclarationResponse.objects.filter(declaration__author=author)
         self.filterset = ResponseFilter(self.request.GET, queryset)
         return self.filterset.qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
-
         return context
 
 
