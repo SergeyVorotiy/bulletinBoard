@@ -18,7 +18,6 @@ urlpatterns = [
     path('account/activate/', user_activation_view, name='activation'),
     path('', BoardView.as_view(), name='declarations'),
     path('declaration/<int:pk>/', DeclarationView.as_view()),
-    path('declaration/<int:pk>/delete', DeclarationDeleteView.as_view()),
     path('declaration/create/', DeclarationCreateView.as_view()),
     path('response/<int:pk>/', ResponseView.as_view()),
     path('declaration/<int:pk>/delete/', DeclarationDeleteView.as_view()),

@@ -1,7 +1,7 @@
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.contrib.auth.models import User, Permission, AnonymousUser
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+from django.contrib.auth.models import User, Permission
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -10,20 +10,11 @@ from django.views.generic import (
     CreateView,
     UpdateView,
     DeleteView,
-    TemplateView
 )
-
-from allauth.account.views import SignupView
 
 from .forms import ActivationForm, DeclarationForm, DeclarationResponseForm
 from .models import UserActivation, Declaration, DeclarationResponse
 from .filters import ResponseFilter
-
-
-class CustomSignupView(SignupView):
-    def form_valid(self, form):
-        super().form_valid(self, form)
-        return HttpResponseRedirect('/account/activate/')
 
 
 @login_required
@@ -37,7 +28,10 @@ def user_activation_view(request):
             if check_table.user == user and check_table.secret_key == key:
                 check_table.user_activated = True
                 check_table.save()
-                User.objects.get(email=request.user.email).user_permissions.add(Permission.objects.get(codename='add_declaration'), Permission.objects.get(codename='add_declarationresponse'))
+                User.objects.get(email=request.user.email).user_permissions.add(
+                    Permission.objects.get(codename='add_declaration'),
+                    Permission.objects.get(codename='add_declarationresponse')
+                )
                 return HttpResponseRedirect('/')
             else:
                 context['activate_error_incorrect_code'] = False
@@ -79,14 +73,14 @@ class DeclarationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteV
 
 
 class ResponseView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-    permission_required = ('board_adddeclaration', )
+    permission_required = ('board.add_declaration', )
     model = DeclarationResponse
     template_name = 'response.html'
     context_object_name = 'response'
 
 
 class UserResponsesView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    permission_required = ('board.add_declaration')
+    permission_required = ('board.add_declaration', )
     model = DeclarationResponse
     ordering = '-date'
     template_name = 'user_responses.html'
@@ -138,6 +132,7 @@ class DeclarationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteV
     model = Declaration
     template_name = 'delete.html'
     success_url = '/'
+
 
 class DeclarationUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = ('board.add_declaration', )
