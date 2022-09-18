@@ -26,6 +26,9 @@ class Declaration(models.Model):
     category = models.CharField(max_length=16, choices=CATEGORIES, default='tanks')
     upload = models.FileField(upload_to='media/', default='', blank=True)
 
+    def __str__(self):
+        return f'{self.title}\r from {self.author.username}'
+
 
 class DeclarationResponse(models.Model):
     date = models.DateTimeField(auto_now_add=True)

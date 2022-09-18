@@ -21,7 +21,7 @@ urlpatterns = [
     path('declaration/<int:pk>/delete', DeclarationDeleteView.as_view()),
     path('declaration/create/', DeclarationCreateView.as_view()),
     path('response/<int:pk>/', ResponseView.as_view()),
-    path('response/<int:pk>/delete/', ResponseView.as_view()),
+    path('declaration/<int:pk>/delete/', DeclarationDeleteView.as_view()),
     path('response/<int:pk>/accept', accepte_response),
     path('response/<int:pk>/delete', delete_response),
     path('declaration/<int:pk>/createresponse/', DeclarationResponseCreateView.as_view()),

@@ -27,19 +27,21 @@ def save_user(sender, instance, created, **kwargs):
         user_activation.save()
 
 
-@receiver(signal=pre_save, sender=User)
+@receiver(signal=pre_save, sender=DeclarationResponse)
 def save_response(sender, instance, **kwargs):
     if instance.accepted:
         send_mail(
             subject=f'Ваш отклик принят',
             message=f'Ваш отклик "{instance.text}" \rна объявление "{instance.declaration.title}" - http://127.0.0.1/declaration/{instance.declaration.pk}/ \rбыл принят автором ',
             from_email=None,
-            recipient_list=[instance.user.email],
+            recipient_list=[instance.author.email],
         )
+        print(f'{instance.text}" \rна объявление "{instance.declaration.title} {instance.author.email}')
     else:
         send_mail(
             subject='Новый отклик на ваше объявление',
-            message=f'На объявление "{instance.declaration.title}" - http://127.0.0.1/declaration/{instance.declaration.pk}/ \rбыл оставлен новый отклик {instance.text} от {instance.user.username}',
+            message=f'На объявление "{instance.declaration.title}" - http://127.0.0.1/declaration/{instance.declaration.pk}/ \rбыл оставлен новый отклик {instance.text} от {instance.author.username}',
             from_email=None,
-            recipient_list=[instance.declaration.user.email],
+            recipient_list=[instance.declaration.author.email],
         )
+        print(f'{instance.declaration.title}" - http://127.0.0.1/declaration/{instance.declaration.pk}/ \rбыл оставлен новый отклик {instance.text} от {instance.author.username} --{instance.declaration.author.email}')

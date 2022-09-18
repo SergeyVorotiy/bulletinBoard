@@ -66,7 +66,7 @@ class DeclarationView(DetailView):
         context = super().get_context_data(**kwargs)
         if self.request.user == context['declaration'].author:
             context['responses'] = DeclarationResponse.objects.filter(declaration=context['declaration'])
-        elif self.request.user.email:
+        elif self.request.user in User.objects.all():
             context['responses'] = DeclarationResponse.objects.filter(author=self.request.user)
         return context
 
@@ -137,7 +137,7 @@ class DeclarationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteV
     permission_required = ('board.add_declaration', )
     model = Declaration
     template_name = 'delete.html'
-    success_url = reverse_lazy('declarations')
+    success_url = '/'
 
 class DeclarationUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = ('board.add_declaration', )
