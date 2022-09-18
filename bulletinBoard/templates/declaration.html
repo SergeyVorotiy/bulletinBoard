@@ -6,7 +6,7 @@ declaration
 {% load static %}
   <h3>{{declaration.title}}</h3>
   <h6>{{declaration.text}}</h6>
-
+  
   <img class="card-img" src="/media/{{declaration.upload}}" alt="">
   {% if request.user == declaration.author %}
   <a href="/declaration/{{declaration.pk}}/edit/">Изменить</a>
