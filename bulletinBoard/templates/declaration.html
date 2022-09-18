@@ -6,10 +6,13 @@ declaration
 {% load static %}
   <h3>{{declaration.title}}</h3>
   <h6>{{declaration.text}}</h6>
-  {{declaration.upload}}
+
+  <img class="card-img" src="/media/{{declaration.upload}}" alt="">
   {% if request.user == declaration.author %}
   <a href="/declaration/{{declaration.pk}}/edit/">Изменить</a>
+  <a href="/declaration/{{declaration.pk}}/delete/">Удалить</a>
   {% endif %}
+  {%if responses%}
   <h3>Responses:</h3>
   {% for response in responses %}
   <a class="form-control" href="/response/{{response.pk}}/">
@@ -19,4 +22,5 @@ declaration
   {% if request.user != declaration.author %}
   <a href="/declaration/{{declaration.pk}}/createresponse" class="form-control btn">Добавить отклик</a>
   {% endif %}
+  {%endif%}
 {% endblock content %}

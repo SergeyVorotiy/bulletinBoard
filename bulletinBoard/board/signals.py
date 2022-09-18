@@ -11,7 +11,6 @@ from .models import Declaration, DeclarationResponse, UserActivation
 def activate_user(sender, instance, created, **kwargs):
     if created:
         mail = instance.user.email
-        print(instance.secret_key)
         send_mail(
             subject='Подтверждение регистрации на портале',
             message=f'Код подтверждения: {instance.secret_key}\r Перейти на страницу активации: http://127.0.0.1:8000/account/activate',
@@ -28,20 +27,19 @@ def save_user(sender, instance, created, **kwargs):
         user_activation.save()
 
 
-@receiver(signal=pre_save, sender=DeclarationResponse)
+@receiver(signal=pre_save, sender=User)
 def save_response(sender, instance, **kwargs):
     if instance.accepted:
         send_mail(
-            subject='Ваш отклик приняли',
-            message=f'Ваш отклик {instance.text} на объявление {instance.declaration.title}, был принят автором '
-                    f'\rhttp://127.0.0.1/declaration/{instance.declaration.pk}/',
+            subject=f'Ваш отклик принят',
+            message=f'Ваш отклик "{instance.text}" \rна объявление "{instance.declaration.title}" - http://127.0.0.1/declaration/{instance.declaration.pk}/ \rбыл принят автором ',
             from_email=None,
             recipient_list=[instance.user.email],
         )
     else:
         send_mail(
             subject='Новый отклик на ваше объявление',
-            message=f'На ваше объявление {instance.declaration.title} - http://127.0.0.1/declaration/{instance.declaration.pk}/ Был оставлен новый отклик {instance.text}',
+            message=f'На объявление "{instance.declaration.title}" - http://127.0.0.1/declaration/{instance.declaration.pk}/ \rбыл оставлен новый отклик {instance.text} от {instance.user.username}',
             from_email=None,
             recipient_list=[instance.declaration.user.email],
         )

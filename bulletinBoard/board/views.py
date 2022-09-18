@@ -1,6 +1,6 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, AnonymousUser
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -78,7 +78,8 @@ class DeclarationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteV
     success_url = reverse_lazy('declarations')
 
 
-class ResponseView(DetailView):
+class ResponseView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    permission_required = ('board_adddeclaration', )
     model = DeclarationResponse
     template_name = 'response.html'
     context_object_name = 'response'
@@ -131,6 +132,12 @@ class DeclarationResponseCreateView(LoginRequiredMixin, PermissionRequiredMixin,
         declaration_response.save()
         return HttpResponseRedirect(f'/declaration/{declaration_pk}/')
 
+
+class DeclarationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = ('board.add_declaration', )
+    model = Declaration
+    template_name = 'delete.html'
+    success_url = reverse_lazy('declarations')
 
 class DeclarationUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = ('board.add_declaration', )
