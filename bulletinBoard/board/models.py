@@ -24,7 +24,7 @@ class Declaration(models.Model):
     title = models.CharField(max_length=120)
     text = models.TextField()
     category = models.CharField(max_length=16, choices=CATEGORIES, default='tanks')
-    upload = models.FileField(upload_to='media/', default=None, blank=True)
+    upload = models.FileField(upload_to='media/', default='', blank=True)
 
 
 class DeclarationResponse(models.Model):
