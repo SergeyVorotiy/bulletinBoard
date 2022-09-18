@@ -20,6 +20,11 @@ from .models import UserActivation, Declaration, DeclarationResponse
 from .filters import ResponseFilter
 
 
+class CustomSignupView(SignupView):
+    def form_valid(self, form):
+        super().form_valid(self, form)
+        return HttpResponseRedirect('/account/activate/')
+
 @login_required
 def user_activation_view(request):
     user = request.user
