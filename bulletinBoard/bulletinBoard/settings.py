@@ -149,6 +149,9 @@ LOGIN_REDIRECT_URL = '/account/activate/'
 SIGNUP_REDIRECT_URL = '/account/activate/'
 
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 load_dotenv()
 env_path = Path('.')/'.env'
 load_dotenv(dotenv_path=env_path)
